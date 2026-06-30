@@ -2,6 +2,7 @@ from rest_framework.serializers import *
 from courses.models.course import Course
 
 class CourseSerializer(Serializer):
+    id = IntegerField()
     name = CharField(max_length=100)
     code = CharField()
     #description

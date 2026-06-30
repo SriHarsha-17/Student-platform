@@ -1,5 +1,5 @@
-from django.http import HttpResponse, JsonResponse
 from rest_framework.decorators import api_view
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.status import *
 from courses.models.course import Course
@@ -37,3 +37,21 @@ def course_detail(request,pk):
     elif request.method == 'DELETE':
         course.delete()
         return Response({"status":"Course deleted sucessfully"},status=HTTP_204_NO_CONTENT)
+    
+
+
+class CourseListCreateView(APIView):
+    """ This view is going to return all the courses in the course model"""
+
+    def get(self,request,format=None):
+        courses = Course.objects.all()
+        serializer = CourseSerializer(courses, many=True)
+        return Response(serializer.data,status=HTTP_200_OK)
+    
+
+    def post(self,request):
+        serializer = CourseSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=HTTP_201_CREATED)
+        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
