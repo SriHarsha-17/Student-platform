@@ -55,3 +55,22 @@ class CourseListCreateView(APIView):
             serializer.save()
             return Response(serializer.data, status=HTTP_201_CREATED)
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+    
+class CourseDetailUpdateDeleteView(APIView):
+    def get(self,request,pk):
+        course = get_object_or_404(Course,pk=pk)
+        serializer = CourseSerializer(course)
+        return Response(serializer.data, status=HTTP_200_OK)
+    
+    def put(self,request,pk):
+        course = get_object_or_404(Course,pk=pk)
+        serializer = CourseSerializer(course,data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=HTTP_200_OK)
+        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+    
+    def delete(self,request,pk):
+        course = get_object_or_404(Course,pk=pk)
+        course.delete()
+        return Response({"status" : "Course deleted sucessfully"}, status=HTTP_204_NO_CONTENT)
