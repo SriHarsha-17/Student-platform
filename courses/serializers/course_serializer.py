@@ -9,6 +9,7 @@ class CourseSerializer(Serializer):
     description = CharField(max_length=600)
 
     # Function based validator
+    # Feild-level validation
     def validate_description(self, value):
         """ This method validates the description feilds and ensures there's no swear words"""
         if value.count("shit") or value.count("scam"):
