@@ -8,6 +8,18 @@ class CourseSerializer(Serializer):
     code = CharField(validators =[UniqueValidator(queryset= Course.objects.all(),message="Code must be unique")])
     description = CharField(max_length=600)
 
+    # Function based validator
+    def validate_description(self, value):
+        """ This method validates the description feilds and ensures there's no swear words"""
+        if value.count("shit") or value.count("scam"):
+            raise ValidationError("Course description violates standford standard's")
+        return value
+    
+    def validate_code(self,value):
+        """ This method checks if course code starts with CSE"""
+        if not value.startswith("CSE"):
+            raise ValidationError("Course code must start with CSE")
+        return value
     # class Meta:
     #     validators = [
     #         UniqueTogetherValidator(
@@ -17,6 +29,7 @@ class CourseSerializer(Serializer):
     #         )
     #     ]
         
+
     def create(self, validated_data):
         """Create and re turn a new `Course` instance, given the validated data."""
         return Course.objects.create(**validated_data)
